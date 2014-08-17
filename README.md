@@ -48,6 +48,10 @@ Create a copy of the project. For each of the project's discussions, duplicate t
 Overrides And Gotchas
 ----------------------
 
+Beware of your relationships. The gem will use both the parent and children relationships to determine what objects to duplicate in the database.
+
+If you have two models that both "has_many" of the same child model, the gem may create two versions of the same duplicate. For example, let's say I have a project that "has_many :discussions" and "has_many :posts", and a discussion also "has_many :posts". The gem would iterate through each of the project's posts and duplicate them, then iterate through each of the project's discussions' posts, and duplicate them as well. Most likely, I need to change my Project to Post relationship like so: a project "has_many :posts, through: :discussions". However, if this is not correct for your application, you can override which associations are duplicable for a given model like so:
+
 **Determine which associations are duplicable**
 ```ruby
 class Project
@@ -56,31 +60,4 @@ class Project
   DUPLICABLE_ASSOCIATIONS [:discussions]
 
 end
-
-class Discussion
-  has_many :posts
-
-end
-
-RailsDeepCopy::Duplicate.create(Project.last)
-
-
-
-
-
-
-
-
-
-```ruby
-class Discussion
-  # Change which associations are duplicable (empty array for none)
-  DUPLICABLE_ASSOCIATIONS = [:posts, :members]
-
-  # Set default attribute values when object is duplicated
-  DUPLICABLE_DEFAULTS = {title: "Great discussion title", description: "This is a default description of the copied discussion"}
-end
 ```
-
-
-
