@@ -45,6 +45,23 @@ Step 2 is actually done on a recursive basis, meaning the gem can handle deeply 
 Create a copy of the project. For each of the project's discussions, duplicate the discussion, change project_id to the new project's ID. For each of the discussion's posts, duplicate the post, change discussion_id, change project_id (if exists on model). For each of the post's comments, rinse and repeat the same steps, assigning project_id, discussion_id, and post_id when the attributes exist on the model.
 
 
+Options
+----------------------
+
+RailsDeepCopy::Duplicate.create(object, options = {})
+
+**Options and their defaults:**
+* changes: {}
+* associations: {}
+* exclude_associations: {}
+* skip_validations: true
+
+```ruby
+@project = Project.find(122)
+RailsDeepCopy::Duplicate.create(@project, changes: {name: "New Project's Name", description: "A great description"}, skip_validations: false)
+```
+
+
 Overrides And Gotchas
 ----------------------
 
