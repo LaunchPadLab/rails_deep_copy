@@ -11,7 +11,6 @@ The purpose of Rails Deep Copy is to provide an automated means of duplicating a
 * has_one
 * has_one :through
 
-
 Usage
 ----------------------
 
@@ -33,19 +32,21 @@ Usage
 #=> 6
 ```
 
+How It Works
+---------------------
+
+The gem figures out which children objects need to be duplicated based on the associations on the model (has_many, has_one). For example, if a project "has_many :discussions" the gem would do the following:
+
+1. Create a copy of the project
+2. For each of the project's discussions, duplicate the discussion, change project_id to the new project's ID, and save the discussion
+
+Step 2 is actually done on a recursive basis, meaning the gem can handle deeply nested relationships. Consider the following: a project "has_many :discussions", a discussion "has_many :posts", and a post "has_many :comments". The gem will do the following:
+
+Create a copy of the project. For each of the project's discussions, duplicate the discussion, change project_id to the new project's ID. For each of the discussion's posts, duplicate the post, change discussion_id, change project_id (if exists on model). For each of the post's comments, rinse and repeat the same steps, assigning project_id, discussion_id, and post_id when the attributes exist on the model.
+
 
 Overrides And Gotchas
 ----------------------
-
-The gem figures out which children objects need to be duplicated based on the association declarations on the model (has_many, has_one). For example, if a project "has_many :discussions" and and a discussion "has_many :posts", the gem would do the following:
-
-* Step #1. Create a copy of the project
-* Step #2. Iterate through each discussion and:
-
-1. Duplicate the discussion
-2. Change its project_id to correspond with the newly created project copy
-3. Iterate through each of the discussion's posts and repeat 1 and 2
-
 
 **Determine which associations are duplicable**
 ```ruby
