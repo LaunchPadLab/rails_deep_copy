@@ -39,8 +39,8 @@ Overrides And Gotchas
 
 The gem figures out which children objects need to be duplicated based on the association declarations on the model (has_many, has_one). For example, if a project "has_many :discussions" and and a discussion "has_many :posts", the gem would do the following:
 
-Step #1. Create a copy of the project
-Step #2. Iterate through each discussion and:
+* Step #1. Create a copy of the project
+* Step #2. Iterate through each discussion and:
 
 1. Duplicate the discussion
 2. Change its project_id to correspond with the newly created project copy
