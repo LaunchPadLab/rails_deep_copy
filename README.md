@@ -21,6 +21,7 @@ Usage
 ```
 
 **Associated objects are automatically duplicated too!**
+```ruby
 @project.discussions.count
 #=> 3
 @project.discussions.first.posts.count
