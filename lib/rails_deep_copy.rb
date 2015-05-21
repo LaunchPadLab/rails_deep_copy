@@ -17,6 +17,7 @@ module RailsDeepCopy
 
     def self.create(object_to_duplicate, options = {})
       Duplicate.new(object_to_duplicate, options).execute
+      @new_object
     end
 
     def default_associations
