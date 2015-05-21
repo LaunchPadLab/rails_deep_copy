@@ -12,12 +12,12 @@ module RailsDeepCopy
       @skip_validations = options[:skip_validations] || true
       @id_hash = options[:id_hash] || {}
       @changes.merge!(@id_hash)
+      @duplicated_objects = options.fetch(:duplicated_objects, [])
       setup_associations
     end
 
     def self.create(object_to_duplicate, options = {})
       Duplicate.new(object_to_duplicate, options).execute
-      @new_object
     end
 
     def default_associations
@@ -88,15 +88,17 @@ module RailsDeepCopy
     def execute
       implement_new_object_differences
       @new_object.save(:validate => validate?) && update_id_hash
+      @duplicated_objects << @new_object
       associations.each do |association|
         objects = [@object_to_duplicate.send(association.name)].flatten
         objects.each do |obj|
           # recursively create child objects and assign IDs
-          Duplicate.create(obj, id_hash: id_hash)
+          Duplicate.create(obj, id_hash: id_hash, duplicated_objects: @duplicated_objects)
         end
       end
       # done with children - remove ID from ID hash
       remove_id_from_id_hash
+      @duplicated_objects.first
     end
 
   end
