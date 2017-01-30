@@ -90,7 +90,7 @@ module RailsDeepCopy
       @new_object.save(:validate => validate?) && update_id_hash
       @duplicated_objects << @new_object
       associations.each do |association|
-        objects = [@object_to_duplicate.send(association.name)].flatten
+        objects = [@object_to_duplicate.send(association.name)].flatten.compact
         objects.each do |obj|
           # recursively create child objects and assign IDs
           Duplicate.create(obj, id_hash: id_hash, duplicated_objects: @duplicated_objects)
